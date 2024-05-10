@@ -9,14 +9,26 @@ import SavedScreen from './Components/SavedScreen';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
+import * as SplashScreen from 'expo-splash-screen'
+import { useCallback, useEffect, useState } from 'react';
+import * as Font from 'expo-font';
+
+SplashScreen.preventAutoHideAsync();
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
     <Tab.Navigator 
       screenOptions={{
-        headerShown:false
-      }}>
+        headerShown:false,
+        tabBarActiveTintColor: 'black',
+        // tabBarInactiveTintColor: '',
+        tabBarInactiveBackgroundColor: '#AEBF93',
+        tabBarStyle: { 
+          backgroundColor: "#57733C"
+        }
+      }}
+      >
       <Tab.Screen 
         name ="home"
         component={HomeScreen}
@@ -47,16 +59,53 @@ const TabNavigator = () => {
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [appIsLoaded, setAppisLoaded] = useState<boolean>(false);
+
+
+  useEffect(()=>{
+    const prepare = async () => {
+      try{
+        await Font.loadAsync({
+          regular: require("./assets/fonts/PoetsenOne-Regular.ttf")
+        })
+      } 
+      catch(e) {
+        console.log(e)
+      }
+      finally {
+        setAppisLoaded(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const onLayout = useCallback(async () => {
+    if(appIsLoaded){
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsLoaded]);
+
+  if(!appIsLoaded){
+    return null;
+  }
+
   return (
     <NavigationContainer>
-      <View style={{ flex:1 }}>
-        <Stack.Navigator>
+      <View onLayout={onLayout} style={{ flex:1 }}>
+        <Stack.Navigator screenOptions={{
+          headerTitleStyle: {
+            fontFamily: 'regular'
+          },
+          headerStyle: {
+            backgroundColor: "#AEBF93"
+          }
+        }}>
           <Stack.Group>
             <Stack.Screen 
               name="main"
               component={TabNavigator}
               options={{
-                headerTitle: "Translate"
+                headerTitle: "Translate",
               }}
             />
           </Stack.Group>
