@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler'
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './Components/HomeScreen';
 import SettingsScreen from './Components/SettingsScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,6 +11,9 @@ import { Fontisto } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react';
 import * as Font from 'expo-font';
+import colors from './utils/colors';
+import LanguageSelection from './Components/LanguageSelection';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 SplashScreen.preventAutoHideAsync();
 const Tab = createBottomTabNavigator();
@@ -21,11 +23,14 @@ const TabNavigator = () => {
     <Tab.Navigator 
       screenOptions={{
         headerShown:false,
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: colors.black,
         // tabBarInactiveTintColor: '',
-        tabBarInactiveBackgroundColor: '#AEBF93',
+        tabBarInactiveBackgroundColor: colors.primary,
         tabBarStyle: { 
-          backgroundColor: "#57733C"
+          backgroundColor: colors.secondary
+        },
+        tabBarLabelStyle:{
+          fontFamily:"regular"
         }
       }}
       >
@@ -56,7 +61,7 @@ const TabNavigator = () => {
     </Tab.Navigator>
   )
 }
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [appIsLoaded, setAppisLoaded] = useState<boolean>(false);
@@ -97,7 +102,7 @@ export default function App() {
             fontFamily: 'regular'
           },
           headerStyle: {
-            backgroundColor: "#AEBF93"
+            backgroundColor: colors.primary
           }
         }}>
           <Stack.Group>
@@ -109,18 +114,26 @@ export default function App() {
               }}
             />
           </Stack.Group>
+
+          <Stack.Group
+            screenOptions={{
+              presentation: 'containedModal',
+              headerStyle:{
+                backgroundColor: colors.white
+              },
+              headerTitleStyle:{
+                color: colors.black,
+                fontFamily: 'regular'
+              },
+              headerShadowVisible: false
+            }}>
+            <Stack.Screen 
+              name="languageSelection"
+              component={LanguageSelection}
+            />
+          </Stack.Group>
         </Stack.Navigator>
       </View>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding:30
-  },
-});
