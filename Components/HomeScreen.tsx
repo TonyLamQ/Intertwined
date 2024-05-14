@@ -6,6 +6,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as tf from '@tensorflow/tfjs';
+
 type NavigationProp = NativeStackNavigationProp<StackList, 'home'>;
 type Props = {
   navigation: NavigationProp;
