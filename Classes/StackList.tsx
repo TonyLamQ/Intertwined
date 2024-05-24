@@ -1,6 +1,6 @@
 export type StackList = {
     home: undefined;
     settings: undefined;
-    savedScreen: undefined;
+    toolsScreen: undefined;
     languageSelection: {title:string};
 }

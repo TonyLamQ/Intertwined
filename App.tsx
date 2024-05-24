@@ -4,10 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './Components/HomeScreen';
 import SettingsScreen from './Components/SettingsScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SavedScreen from './Components/SavedScreen';
+import ToolsScreen from './Components/ToolsScreen';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react';
 import * as Font from 'expo-font';
@@ -43,11 +42,11 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen 
-        name ="saved"
-        component={SavedScreen}
+        name ="tools"
+        component={ToolsScreen}
         options={{
-          tabBarLabel:"Saved",
-          tabBarIcon: (props)=> <Fontisto name="save" size={props.size} color={props.color} />
+          tabBarLabel:"Tools",
+          tabBarIcon: (props)=> <FontAwesome5 name="toolbox" size={props.size} color={props.color} />
         }}
       />
       <Tab.Screen 
@@ -110,7 +109,7 @@ export default function App() {
               name="main"
               component={TabNavigator}
               options={{
-                headerTitle: "Translate",
+                headerTitle: "Intertwined",
               }}
             />
           </Stack.Group>
