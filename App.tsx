@@ -13,7 +13,8 @@ import * as Font from 'expo-font';
 import colors from './utils/colors';
 import LanguageSelection from './Components/LanguageSelection';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import MapScreen from './Components/MapScreen';
+import { Entypo } from '@expo/vector-icons';
 SplashScreen.preventAutoHideAsync();
 const Tab = createBottomTabNavigator();
 
@@ -47,6 +48,14 @@ const TabNavigator = () => {
         options={{
           tabBarLabel:"Tools",
           tabBarIcon: (props)=> <FontAwesome5 name="toolbox" size={props.size} color={props.color} />
+        }}
+      />
+      <Tab.Screen 
+        name ="map"
+        component={MapScreen}
+        options={{
+          tabBarLabel:"map",
+          tabBarIcon: (props)=> <Entypo name="map" size={props.size} color={props.color} />
         }}
       />
       <Tab.Screen 

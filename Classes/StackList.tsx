@@ -3,4 +3,5 @@ export type StackList = {
     settings: undefined;
     toolsScreen: undefined;
     languageSelection: {title:string};
+    mapScreen: undefined;
 }
