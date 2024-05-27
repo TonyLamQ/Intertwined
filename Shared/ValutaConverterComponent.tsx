@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import colors from '../utils/colors';
 import { CurrencyRates, getCurrencyByRate } from '../Data/CurrencyRates';
@@ -11,13 +11,21 @@ export default function ValutaConverterComponent() {
     const [fromCurrency, setfromCurrency] = useState(CurrencyRates.TRY.toString());
     const [toCurrency, settoCurrency] = useState(CurrencyRates.TRY.toString());
 
+    useEffect(() => {
+      convertCurrency();
+    }, [fromCurrency, toCurrency, amount]);
+    
     const convertCurrency = () => {
-        const result = ((parseFloat(amount) / parseFloat(fromCurrency)) * parseFloat(toCurrency)).toFixed(2);
-        if (isNaN(parseFloat(result))) {
-          setConvertedAmount('Invalid amount');
-          return;
-        }
-        setConvertedAmount(result);
+      if (amount === '') {
+        setConvertedAmount('');
+        return;
+      }
+      const result = ((parseFloat(amount) / parseFloat(fromCurrency)) * parseFloat(toCurrency)).toFixed(2);
+      if (isNaN(parseFloat(result))) {
+        setConvertedAmount('Invalid amount');
+        return;
+      }
+      setConvertedAmount(result);
     };
     const handleAmountChange = (text: string) => {
       // Regular expression to validate a decimal or integer number
@@ -38,7 +46,6 @@ export default function ValutaConverterComponent() {
               const temp = fromCurrency;
               setfromCurrency(toCurrency);
               settoCurrency(temp);
-              convertCurrency();
             }}> 
               <Octicons style={styles.HeaderIcon} name="arrow-switch" size={24} color="black" />
             </TouchableOpacity>
@@ -57,13 +64,12 @@ export default function ValutaConverterComponent() {
           <Text style={styles.PickerTitle}>Convert To:</Text>
           <CurrencyPicker selectedValue={toCurrency} onValueChange={(itemValue, itemIndex) => settoCurrency(itemValue)} />
 
-          <Button title="Convert" onPress={convertCurrency} color={colors.secondary}/>
           {convertedAmount === '' ? null : convertedAmount !== 'Invalid amount' ? (
-            <Text>
+            <Text style={styles.CurrencyResult}>
              Converted Amount: {convertedAmount} {getCurrencyByRate(CurrencyRates, parseFloat(toCurrency))}
             </Text>
           ) : (
-            <Text>Amount is invalid.</Text>
+            <Text style={styles.CurrencyResult}>Amount is invalid.</Text>
           )}
         </View>
     );
@@ -78,6 +84,7 @@ const styles = StyleSheet.create({
     paddingTop:20,
     paddingBottom:10,
     borderRadius: 20,
+    marginBottom: 20,
   },
   Header: {
     flexDirection: 'row',
@@ -99,6 +106,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     color: colors.white,
     right: 20,
+    marginTop: -12,
   },
   PickerTitle: {
     color: colors.black,
@@ -112,5 +120,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     marginBottom: 10,
+  },
+  CurrencyResult: {
+    marginTop: 10,
+    color: colors.white,
+    fontSize: 15,
+    fontWeight: 'bold',
+    borderColor: colors.white,
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: colors.secondary,
   }
 });
