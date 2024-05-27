@@ -2,12 +2,14 @@ import colors from '../utils/colors';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import ValutaConverterComponent from '../Shared/ValutaConverterComponent';
 import BudgetTrackerComponent from '../Shared/BudgetTrackerComponent';
+import WeatherComponent from '../Shared/WeatherComponent';
 
 export default function ToolsScreen() {
   return (
       <ScrollView style={styles.scrollView}>
         <ValutaConverterComponent />
         <BudgetTrackerComponent />	
+        <WeatherComponent />
       </ScrollView>
   );
 }

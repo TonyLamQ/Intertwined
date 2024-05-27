@@ -64,7 +64,9 @@ export default function ValutaConverterComponent() {
           <Text style={styles.PickerTitle}>Convert To:</Text>
           <CurrencyPicker selectedValue={toCurrency} onValueChange={(itemValue, itemIndex) => settoCurrency(itemValue)} />
 
-          {convertedAmount === '' ? null : convertedAmount !== 'Invalid amount' ? (
+          {convertedAmount === '' ? (
+            <Text style={styles.CurrencyResult}>Converted Amount: </Text>
+          ) : convertedAmount !== 'Invalid amount' ? (
             <Text style={styles.CurrencyResult}>
              Converted Amount: {convertedAmount} {getCurrencyByRate(CurrencyRates, parseFloat(toCurrency))}
             </Text>
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   CurrencyResult: {
-    marginTop: 10,
+    marginVertical: 5,
     color: colors.white,
     fontSize: 15,
     fontWeight: 'bold',
