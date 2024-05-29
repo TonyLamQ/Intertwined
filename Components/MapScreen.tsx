@@ -6,7 +6,7 @@ import colors from '../utils/colors';
 import { FontAwesome6 } from '@expo/vector-icons';
 
 export default function MapScreen() {
-    const [location, setLocation] = useState<Location.LocationObject | null>(null);
+    const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     useEffect(() => {
@@ -17,10 +17,10 @@ export default function MapScreen() {
                 return;
             }
             try {
-                let location = await Location.getCurrentPositionAsync({
+                let userLocation = await Location.getCurrentPositionAsync({
                   accuracy: Location.Accuracy.Lowest,
                 });
-                setLocation(location);
+                setUserLocation(userLocation);
               } catch (error) {
                 console.error(error);
                 setErrorMsg('Failed to fetch location');
@@ -32,19 +32,19 @@ export default function MapScreen() {
   return (
       <View style={styles.Container}>
         {errorMsg?(<Text>{errorMsg}</Text>):null}
-        {location?(<MapView
+        {userLocation?(<MapView
           style={styles.MapView}
           initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: userLocation.coords.latitude,
+            longitude: userLocation.coords.longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
         >
           <Marker
             coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
+              latitude: userLocation.coords.latitude,
+              longitude: userLocation.coords.longitude,
             }}
             title="You are here"
           />
