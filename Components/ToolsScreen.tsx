@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import ValutaConverterComponent from '../Shared/ValutaConverterComponent';
 import BudgetTrackerComponent from '../Shared/BudgetTrackerComponent';
 import WeatherComponent from '../Shared/WeatherComponent';
+import ImportantDocuments from '../Shared/ImportantDocuments';
 
 export default function ToolsScreen() {
   return (
@@ -10,6 +11,7 @@ export default function ToolsScreen() {
         <ValutaConverterComponent />
         <BudgetTrackerComponent />	
         <WeatherComponent />
+        <ImportantDocuments />
       </ScrollView>
   );
 }
@@ -20,8 +22,5 @@ const styles = StyleSheet.create({
     padding:30,
     gap: 20,
     backgroundColor: colors.white,
-  },
-  ValutaConverter:{
-
   }
 });
