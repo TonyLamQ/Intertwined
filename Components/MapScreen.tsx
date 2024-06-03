@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Modal, StyleSheet, Text, View, TouchableOpacity, Button, TextInput } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import * as Location from 'expo-location';
 import colors from '../utils/colors';
 import { FontAwesome6 } from '@expo/vector-icons';
 
 export default function MapScreen() {
+    const [modalVisible, setModalVisible] = useState(false);
     const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
+    const [locationInput, setLocationInput] = useState('');
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+    const handleAddPress = () => {
+        setModalVisible(true);
+    };
+
+    const handleSavePress = () => {
+        setModalVisible(false);
+    };
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -54,12 +63,32 @@ export default function MapScreen() {
           <Text>Loading...</Text>
         </View>
       )}
-      <TouchableOpacity style={styles.AddButton} onPress={() => {}}>
+      <TouchableOpacity style={styles.AddButton} onPress={handleAddPress}>
         <FontAwesome6 name="add" size={24} color={colors.white} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.ListButton} onPress={() => {}}>
         <FontAwesome6 name="list-ul" size={24} color={colors.white} />
       </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.modalText}
+              onChangeText={setLocationInput}
+              value={locationInput}
+              placeholder="Enter location"
+            />
+            <Button title="Save" onPress={handleSavePress} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -106,4 +135,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: colors.white,
   },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
 });
