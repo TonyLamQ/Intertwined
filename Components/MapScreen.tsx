@@ -1,23 +1,67 @@
 import { useEffect, useState } from 'react';
-import { Modal, StyleSheet, Text, View, TouchableOpacity, Button, TextInput } from 'react-native';
+import { Modal, StyleSheet, Text, View, TouchableOpacity, Button, TextInput, FlatList } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import * as Location from 'expo-location';
 import colors from '../utils/colors';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { MarkerType } from '../types/Marker';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function MapScreen() {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
-    const [locationInput, setLocationInput] = useState('');
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+    const [addModalVisible, setAddModalVisible] = useState(false);
+    const [markersModalVisible, setMarkersModalVisible] = useState(false);
+
+    const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
+    const [userLocationName, setUserLocationName] = useState<string | null>(null);
+
+    const [locationInput, setLocationInput] = useState(''); 
+    const [markers, setMarkers] = useState<MarkerType[]>([]);
+
     const handleAddPress = () => {
-        setModalVisible(true);
+        setLocationInput('');
+        setAddModalVisible(true);
     };
 
-    const handleSavePress = () => {
-        setModalVisible(false);
+    const handleListPress = async () => {
+      setMarkersModalVisible(true);
+      const userLocationName = await Location.reverseGeocodeAsync({latitude: userLocation?.coords.latitude!, longitude: userLocation?.coords.longitude!});
+      setUserLocationName(userLocationName[0].country+"-"+userLocationName[0].region+"-"+userLocationName[0].name);
+  };
+
+    const handleSavePress = async () => {
+        if (!locationInput) {
+          setAddModalVisible(false);
+          return;
+        }
+        const locations = await Location.geocodeAsync(locationInput, );
+        if (locations.length === 0) {
+          setAddModalVisible(false);
+          console.log('Location not found');
+          return;
+        }
+        // for (let location of locations) {
+        //   console.log(location);
+        // }
+        if (locations.length > 1) {
+          console.log('Multiple locations found', locations);
+          return;
+        }
+        if (locations.length > 0) {
+          setMarkers([...markers, {id: uuidv4(), latitude: locations[0].latitude, longitude: locations[0].longitude }]);
+        }
+
+
+        setAddModalVisible(false);
     };
+
+    const handleCloseListPress = () => {
+      setMarkersModalVisible(false);
+    };
+
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -27,7 +71,7 @@ export default function MapScreen() {
             }
             try {
                 let userLocation = await Location.getCurrentPositionAsync({
-                  accuracy: Location.Accuracy.Lowest,
+                  accuracy: Location.Accuracy.Highest,
                 });
                 setUserLocation(userLocation);
               } catch (error) {
@@ -57,6 +101,16 @@ export default function MapScreen() {
             }}
             title="You are here"
           />
+          {markers.map((marker) => (
+            <Marker
+              key={marker.id}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+              title={locationInput}
+            />
+          ))}
         </MapView>
       ) : (
         <View style={styles.LoadingContainer}>
@@ -66,15 +120,15 @@ export default function MapScreen() {
       <TouchableOpacity style={styles.AddButton} onPress={handleAddPress}>
         <FontAwesome6 name="add" size={24} color={colors.white} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.ListButton} onPress={() => {}}>
+      <TouchableOpacity style={styles.ListButton} onPress={handleListPress}>
         <FontAwesome6 name="list-ul" size={24} color={colors.white} />
       </TouchableOpacity>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={addModalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setAddModalVisible(!addModalVisible);
         }}
       >
         <View style={styles.centeredView}>
@@ -85,7 +139,41 @@ export default function MapScreen() {
               value={locationInput}
               placeholder="Enter location"
             />
-            <Button title="Save" onPress={handleSavePress} />
+            <Button title="Save" onPress={handleSavePress} color={colors.secondary} />
+          </View>
+        </View>
+      </Modal>
+      
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={markersModalVisible}
+        onRequestClose={() => {
+          setMarkersModalVisible(!markersModalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalHeader}>List of markers</Text>
+            <Text>Current Location:</Text>
+            <Text style={styles.modalText}>{userLocationName}</Text>
+            <FlatList 
+              data={markers}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity>
+                <View style={styles.markersItem}>
+                  <Text>{item.latitude}, {item.longitude}</Text>
+                  <TouchableOpacity onPress={() => {
+                    console.log('Navigate to', item.latitude, item.longitude);
+                  }}>
+                  <AntDesign name="arrowright" size={24} color={colors.secondary} />
+                  </TouchableOpacity>
+                </View>
+                </TouchableOpacity>
+              )}
+            />
+            <Button title="Close" onPress={handleCloseListPress} color={colors.secondary} />
           </View>
         </View>
       </Modal>
@@ -157,8 +245,23 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
+  modalHeader: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   modalText: {
     marginBottom: 15,
     textAlign: "center"
+  },
+  markersItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary,
+    width: '100%',
   }
 });
