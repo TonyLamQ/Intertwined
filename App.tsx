@@ -15,6 +15,7 @@ import LanguageSelection from './Components/LanguageSelection';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MapScreen from './Components/MapScreen';
 import { Entypo } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
 const Tab = createBottomTabNavigator();
 
@@ -142,6 +143,7 @@ export default function App() {
           </Stack.Group>
         </Stack.Navigator>
       </View>
+      <Toast/>
     </NavigationContainer>
   );
 }

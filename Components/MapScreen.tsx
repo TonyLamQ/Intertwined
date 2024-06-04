@@ -8,10 +8,9 @@ import { MarkerType } from '../types/Marker';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { AntDesign } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 export default function MapScreen() {
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
     const [addModalVisible, setAddModalVisible] = useState(false);
     const [markersModalVisible, setMarkersModalVisible] = useState(false);
 
@@ -35,16 +34,33 @@ export default function MapScreen() {
     const handleSavePress = async () => {
         if (!locationInput) {
           setAddModalVisible(false);
+          Toast.show({
+            type: 'error',
+            position: 'bottom',
+            text1: 'No location entered',
+            text2: 'Please enter a location to add.',
+          });
           return;
         }
         const locations = await Location.geocodeAsync(locationInput, );
         if (locations.length === 0) {
           setAddModalVisible(false);
-          console.log('Location not found');
+          Toast.show({
+            type: 'error',
+            position: 'bottom',
+            text1: 'Location not found',
+            text2: 'Location not added, please try again.',
+          });
           return;
         }
         if (locations.length > 0) {
           setMarkers([...markers, {id: uuidv4(), latitude: locations[0].latitude, longitude: locations[0].longitude }]);
+          Toast.show({
+            type: 'success',
+            position: 'bottom',
+            text1: 'Location added',
+            text2: 'Location has been added successfully',
+          });
         }
         setAddModalVisible(false);
     };
@@ -52,12 +68,11 @@ export default function MapScreen() {
     const handleCloseListPress = () => {
       setMarkersModalVisible(false);
     };
-
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
+                console.log('Permission to access location was denied');
                 return;
             }
             try {
@@ -67,15 +82,11 @@ export default function MapScreen() {
                 setUserLocation(userLocation);
               } catch (error) {
                 console.error(error);
-                setErrorMsg('Failed to fetch location');
-                console.log(errorMsg)
-
               }
         })();
     },[]);
   return (
       <View style={styles.Container}>
-        {errorMsg?(<Text>{errorMsg}</Text>):null}
         {userLocation?(<MapView
           style={styles.MapView}
           initialRegion={{
