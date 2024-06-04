@@ -43,18 +43,9 @@ export default function MapScreen() {
           console.log('Location not found');
           return;
         }
-        // for (let location of locations) {
-        //   console.log(location);
-        // }
-        if (locations.length > 1) {
-          console.log('Multiple locations found', locations);
-          return;
-        }
         if (locations.length > 0) {
           setMarkers([...markers, {id: uuidv4(), latitude: locations[0].latitude, longitude: locations[0].longitude }]);
         }
-
-
         setAddModalVisible(false);
     };
 
