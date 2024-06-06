@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import colors from '../utils/colors';
-import { CurrencyRates, getCurrencyByRate } from '../Data/CurrencyRates';
-import CurrencyPicker from '../Shared/CurrencyPicker';
+import colors from '../../utils/colors';
+import { CurrencyRates, getCurrencyByRate } from '../../Data/CurrencyRates';
+import CurrencyPicker from './CurrencyPicker';
 import { Octicons } from '@expo/vector-icons';
 
 export default function ValutaConverterComponent() {

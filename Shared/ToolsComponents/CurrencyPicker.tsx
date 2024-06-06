@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import colors from '../utils/colors';
-import { Currencies } from '../Data/Currencies';
+import colors from '../../utils/colors';
+import { Currencies } from '../../Data/Currencies';
 import { StyleSheet } from 'react-native';
 
 type CurrencyPickerProps = {

@@ -1,9 +1,9 @@
 import colors from '../utils/colors';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import ValutaConverterComponent from '../Shared/ValutaConverterComponent';
-import BudgetTrackerComponent from '../Shared/BudgetTrackerComponent';
-import WeatherComponent from '../Shared/WeatherComponent';
-import ImportantDocuments from '../Shared/ImportantDocuments';
+import ValutaConverterComponent from '../Shared/ToolsComponents/ValutaConverterComponent';
+import BudgetTrackerComponent from '../Shared/ToolsComponents/BudgetTrackerComponent';
+import WeatherComponent from '../Shared/ToolsComponents/WeatherComponent';
+import ImportantDocuments from '../Shared/ToolsComponents/ImportantDocuments';
 
 export default function ToolsScreen() {
   return (
