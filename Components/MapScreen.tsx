@@ -7,10 +7,10 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { MarkerType } from '../types/Marker';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-import { AntDesign } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import AddModal from '../Shared/MapComponents/AddModal';
 import MarkersModal from '../Shared/MapComponents/MarkersModal';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function MapScreen() {
     const [addModalVisible, setAddModalVisible] = useState(false);
@@ -72,7 +72,24 @@ export default function MapScreen() {
     const handleCloseListPress = () => {
       setMarkersModalVisible(false);
     };
-
+    
+    const handleFocusPress = () => {
+      if (mapRef.current && markers.length > 0) {
+        const coordinates = markers.map(marker => ({
+          latitude: marker.latitude,
+          longitude: marker.longitude,
+        }));
+        coordinates.push({
+          latitude: userLocation?.coords.latitude!,
+          longitude: userLocation?.coords.longitude!,
+        });
+        (mapRef.current as any).fitToCoordinates(coordinates, {
+          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+          animated: true,
+        });
+      }
+    };
+    
     const navigateTo = (latitude:number, longitude:number) => {
       setMarkersModalVisible(false);
       if (mapRef.current) {
@@ -143,6 +160,9 @@ export default function MapScreen() {
       <TouchableOpacity style={styles.ListButton} onPress={handleListPress}>
         <FontAwesome6 name="list-ul" size={24} color={colors.white} />
       </TouchableOpacity>
+      <TouchableOpacity style={styles.FocusButton} onPress={handleFocusPress}>
+      <MaterialIcons name="fullscreen" size={24} color={colors.white} />
+      </TouchableOpacity>
 
       <AddModal 
         visible={addModalVisible} 
@@ -204,4 +224,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: colors.white,
   },
+  FocusButton: {
+    position: 'absolute',
+    left: 10,
+    bottom: 10,
+    width: 50,
+    height: 50,
+    padding: 10,
+    backgroundColor: colors.secondary,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: colors.white,
+  }
 });
